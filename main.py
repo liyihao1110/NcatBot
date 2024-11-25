@@ -5,14 +5,17 @@ from Ncatbot.websockNB import core
 from Ncatbot.message import GroupMessage,PrivateMessage
 
 # 创建 WebSocket 客户端实例并传入已注册了处理函数的 BotClient 实例
-bot_websocket, botapi = core(4000, 4001)
+bot_websocket, botapi = core(3000, 3001)
 bot_client = bot_websocket.client
 
 # 使用装饰器注册 message 事件处理函数，并监听群聊和私聊
 @bot_client.message(['group'])
 async def reply_group(message: GroupMessage):
+    print(message)
     if message.raw_message == "你好":
         await message.add_text('hi').add_face(4).add_text('你好').reply()
+    elif message.raw_message == "hello":
+        await message.rps().reply(reply=True)
 
 @bot_client.message(['private'])
 async def reply_private(message: PrivateMessage):

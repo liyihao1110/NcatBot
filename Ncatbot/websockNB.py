@@ -28,7 +28,7 @@ class BotWebSocket:
         """
         初始化 BotWebSocket 实例。
 
-        :param url: WebSocket 服务器的 URL。
+        :param port_or_http: WebSocket 服务器的 URL或端口号。
         """
         self.url = port_or_http if str(port_or_http).startswith('ws') else f'ws://localhost:{port_or_http}'
         self.client = BotClient()
