@@ -234,25 +234,25 @@ class BotClient:
                         "检测到当前 token 为默认初始 token ，如暴露在公网，请登录后立刻在 WebUI 中修改 token"
                     )
 
-            # 切到 config 目录
+            # 设置 config 目录
             if platform.system() == "Linux":
                 config_path = "/opt/QQ/resources/app/app_launcher/napcat/config"
                 if not os.path.exists(config_path):
                     os.makedirs(config_path)
-                os.chdir(config_path)
             else:
-                os.chdir(os.path.join(NAPCAT_DIR, "config"))
+                config_path = os.path.join(NAPCAT_DIR, "config")
 
             # 写 onebot11 qq 数据
             with open(
-                "onebot11_" + str(config.bt_uin) + ".json", "w", encoding="utf-8"
+                os.path.join(config_path,("onebot11_" + str(config.bt_uin) + ".json")), "w", encoding="utf-8"
             ) as f:
                 json.dump(expected_data, f, indent=4, ensure_ascii=False)
 
+            src = os.path.join(os.path.dirname(config_path), "quickLoginExample.bat")
+            dst = os.path.join(os.path.dirname(config_path), f"{config.bt_uin}_quickLogin.bat")
+            cmd = f"copy {src} {dst}"
             # 配置 qq 快速登录
-            os.chdir("../") and os.system(
-                f"copy quickLoginExample.bat {config.bt_uin}_quickLogin.bat"
-            )
+            os.system(cmd)
 
             # 确定 webui 路径
             if platform.system() == "Linux":
@@ -280,7 +280,6 @@ class BotClient:
                 _log.error("无法读取 WebUI 配置, 将使用默认配置")
 
             write_start_log()  # 打印启动日志
-            os.chdir(base_path)  # 目录切回去
 
         check_ncatbot_install()  # 检查 ncatbot 安装方式
         ncatbot_quick_start()  # 能够成功连接 napcat 时快速启动
