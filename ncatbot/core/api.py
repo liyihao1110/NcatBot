@@ -25,6 +25,7 @@ from ncatbot.utils.mdmaker import md_maker
 
 _log = get_log()
 
+
 def check_and_log(result):
     if result["status"] == REQUEST_SUCCESS:
         _log.debug(result)
@@ -42,6 +43,7 @@ class BotAPI:
         :param messages: 消息列表
         :return: 转发消息
         """
+
         def decode_summary(report):
             def decode_single_message(message):
                 if message["type"] == "text":

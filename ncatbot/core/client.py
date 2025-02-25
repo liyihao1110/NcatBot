@@ -116,7 +116,7 @@ class BotClient:
             _log.info("正常退出")
             exit(0)
 
-    def run(self, reload=False, debug=False, conti = False):
+    def run(self, reload=False, debug=False, conti=False):
         """
         启动 Bot 客户端
 
@@ -133,7 +133,7 @@ class BotClient:
             if platform.system() == "Linux":
                 napcat_dir = "/opt/QQ/resources/app/app_launcher/napcat"
             else:
-                napcat_dir = os.path.join(os.getcwd(), 'napcat')
+                napcat_dir = os.path.join(os.getcwd(), "napcat")
 
             if platform.system() == "Darwin":
                 _log.error("暂不支持 MacOS 系统")
@@ -243,16 +243,20 @@ class BotClient:
                 if not os.path.exists(config_path):
                     os.makedirs(config_path)
             else:
-                config_path = os.path.join(os.getcwd(), 'napcat', "config")
+                config_path = os.path.join(os.getcwd(), "napcat", "config")
 
             # 写 onebot11 qq 数据
             with open(
-                os.path.join(config_path,("onebot11_" + str(config.bt_uin) + ".json")), "w", encoding="utf-8"
+                os.path.join(config_path, ("onebot11_" + str(config.bt_uin) + ".json")),
+                "w",
+                encoding="utf-8",
             ) as f:
                 json.dump(expected_data, f, indent=4, ensure_ascii=False)
 
             src = os.path.join(os.path.dirname(config_path), "quickLoginExample.bat")
-            dst = os.path.join(os.path.dirname(config_path), f"{config.bt_uin}_quickLogin.bat")
+            dst = os.path.join(
+                os.path.dirname(config_path), f"{config.bt_uin}_quickLogin.bat"
+            )
             cmd = f"copy {src} {dst}"
             # 配置 qq 快速登录
             os.system(cmd)

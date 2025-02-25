@@ -55,7 +55,7 @@ def start_napcat(config_data, system_type: str = "Windows"):
     if system_type == "Windows":
         # Windows启动逻辑
         launcher = get_launcher_name()
-        napcat_dir = os.path.abspath('napcat')
+        napcat_dir = os.path.abspath("napcat")
         launcher_path = os.path.join(napcat_dir, launcher)
 
         if not os.path.exists(launcher_path):

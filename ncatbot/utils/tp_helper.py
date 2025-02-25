@@ -11,7 +11,8 @@ from ncatbot.utils.env_checker import check_linux_permissions
 from ncatbot.utils.logger import get_log
 
 _log = get_log()
-napcat_dir = 'napcat'
+napcat_dir = "napcat"
+
 
 def get_proxy_url():
     """获取 github 代理 URL"""

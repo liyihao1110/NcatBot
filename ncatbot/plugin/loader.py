@@ -157,7 +157,9 @@ class PluginLoader:
             await self.from_class_load_plugins(plugins, **kwargs)
             self.load_compatible_data()
         else:
-            _log.warning(f"插件加载目录: {os.path.abspath(plugins_path)} 不存在，跳过插件加载")
+            _log.warning(
+                f"插件加载目录: {os.path.abspath(plugins_path)} 不存在，跳过插件加载"
+            )
 
     def load_compatible_data(self):
         """
