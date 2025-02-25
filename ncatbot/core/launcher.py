@@ -4,7 +4,6 @@ import platform
 import subprocess
 
 from ncatbot.utils.env_checker import check_linux_permissions
-from ncatbot.utils.literals import NAPCAT_DIR
 from ncatbot.utils.logger import get_log
 
 _log = get_log()
@@ -56,7 +55,7 @@ def start_napcat(config_data, system_type: str = "Windows"):
     if system_type == "Windows":
         # Windows启动逻辑
         launcher = get_launcher_name()
-        napcat_dir = os.path.abspath(NAPCAT_DIR)
+        napcat_dir = os.path.abspath('napcat')
         launcher_path = os.path.join(napcat_dir, launcher)
 
         if not os.path.exists(launcher_path):
@@ -73,8 +72,8 @@ def start_napcat(config_data, system_type: str = "Windows"):
         )
     else:
         # Linux启动逻辑
-        napcat_path = "/opt/QQ/resources/app/app_launcher/napcat"
-        if not os.path.exists(napcat_path):
+        napcat_dir = "/opt/QQ/resources/app/app_launcher/napcat"
+        if not os.path.exists(napcat_dir):
             _log.error("未找到 napcat")
             exit(1)
 
