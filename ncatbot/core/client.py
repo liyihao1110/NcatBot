@@ -16,7 +16,6 @@ from ncatbot.utils.config import config
 from ncatbot.utils.env_checker import check_version
 from ncatbot.utils.literals import (
     INSTALL_CHECK_PATH,
-    NAPCAT_DIR,
     OFFICIAL_GROUP_MESSAGE_EVENT,
     OFFICIAL_NOTICE_EVENT,
     OFFICIAL_PRIVATE_MESSAGE_EVENT,
@@ -117,7 +116,7 @@ class BotClient:
             _log.info("正常退出")
             exit(0)
 
-    def run(self, reload=False, debug=False):
+    def run(self, reload=False, debug=False, conti=False):
         """
         启动 Bot 客户端
 
@@ -134,7 +133,7 @@ class BotClient:
             if platform.system() == "Linux":
                 napcat_dir = "/opt/QQ/resources/app/app_launcher/napcat"
             else:
-                napcat_dir = NAPCAT_DIR
+                napcat_dir = os.path.join(os.getcwd(), "napcat")
 
             if platform.system() == "Darwin":
                 _log.error("暂不支持 MacOS 系统")
@@ -168,18 +167,22 @@ class BotClient:
             INFO_TIME_EXPIRE = time.time() + 20
             _log.info("正在连接 napcat websocket 服务器...")
             while not self.napcat_server_ok():
-                time.sleep(2)
-                if time.time() > MAX_TIME_EXPIRE:
-                    _log.info("连接 napcat websocket 服务器超时, 请检查以下内容:")
-                    _log.info("1. 你在另一个黑框框扫码登录了吗?")
-                    _log.info("2. 检查 QQ 号是否正确填写?")
-                    _log.info("3. 检查网络是否正常?")
-                    exit(0)
-                if time.time() > INFO_TIME_EXPIRE:
-                    _log.info("连接 napcat websocket 服务器超时, 请检查以下内容:")
-                    _log.info("1. 你在另一个黑框框扫码登录了吗?")
-                    _log.info(f"2. 确认 QQ 号: {config.bt_uin}")
-                    INFO_TIME_EXPIRE += 100
+                if not conti:
+                    time.sleep(2)
+                    if time.time() > MAX_TIME_EXPIRE:
+                        _log.info("连接 napcat websocket 服务器超时, 请检查以下内容:")
+                        _log.info("1. 你在另一个黑框框扫码登录了吗?")
+                        _log.info("2. 检查 QQ 号是否正确填写?")
+                        _log.info("3. 检查网络是否正常?")
+                        exit(0)
+                    if time.time() > INFO_TIME_EXPIRE:
+                        _log.info("连接 napcat websocket 服务器超时, 请检查以下内容:")
+                        _log.info("1. 你在另一个黑框框扫码登录了吗?")
+                        _log.info(f"2. 确认 QQ 号: {config.bt_uin}")
+                        INFO_TIME_EXPIRE += 100
+                else:
+                    _log.warning("连接失败, 3秒后将重新尝试连接")
+                    time.sleep(3)
             _log.info("连接 napcat websocket 服务器成功!")
 
         def check_ncatbot_install():
@@ -234,25 +237,29 @@ class BotClient:
                         "检测到当前 token 为默认初始 token ，如暴露在公网，请登录后立刻在 WebUI 中修改 token"
                     )
 
-            # 切到 config 目录
+            # 设置 config 目录
             if platform.system() == "Linux":
                 config_path = "/opt/QQ/resources/app/app_launcher/napcat/config"
                 if not os.path.exists(config_path):
                     os.makedirs(config_path)
-                os.chdir(config_path)
             else:
-                os.chdir(os.path.join(NAPCAT_DIR, "config"))
+                config_path = os.path.join(os.getcwd(), "napcat", "config")
 
             # 写 onebot11 qq 数据
             with open(
-                "onebot11_" + str(config.bt_uin) + ".json", "w", encoding="utf-8"
+                os.path.join(config_path, ("onebot11_" + str(config.bt_uin) + ".json")),
+                "w",
+                encoding="utf-8",
             ) as f:
                 json.dump(expected_data, f, indent=4, ensure_ascii=False)
 
-            # 配置 qq 快速登录
-            os.chdir("../") and os.system(
-                f"copy quickLoginExample.bat {config.bt_uin}_quickLogin.bat"
+            src = os.path.join(os.path.dirname(config_path), "quickLoginExample.bat")
+            dst = os.path.join(
+                os.path.dirname(config_path), f"{config.bt_uin}_quickLogin.bat"
             )
+            cmd = f"copy {src} {dst}"
+            # 配置 qq 快速登录
+            os.system(cmd)
 
             # 确定 webui 路径
             if platform.system() == "Linux":
@@ -280,7 +287,6 @@ class BotClient:
                 _log.error("无法读取 WebUI 配置, 将使用默认配置")
 
             write_start_log()  # 打印启动日志
-            os.chdir(base_path)  # 目录切回去
 
         check_ncatbot_install()  # 检查 ncatbot 安装方式
         ncatbot_quick_start()  # 能够成功连接 napcat 时快速启动
