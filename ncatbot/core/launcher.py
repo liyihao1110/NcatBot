@@ -72,8 +72,8 @@ def start_napcat(config_data, system_type: str = "Windows"):
         )
     else:
         # Linux启动逻辑
-        napcat_path = "/opt/QQ/resources/app/app_launcher/napcat"
-        if not os.path.exists(napcat_path):
+        napcat_dir = "/opt/QQ/resources/app/app_launcher/napcat"
+        if not os.path.exists(napcat_dir):
             _log.error("未找到 napcat")
             exit(1)
 
