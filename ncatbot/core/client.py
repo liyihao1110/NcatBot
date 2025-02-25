@@ -16,7 +16,6 @@ from ncatbot.utils.config import config
 from ncatbot.utils.env_checker import check_version
 from ncatbot.utils.literals import (
     INSTALL_CHECK_PATH,
-    NAPCAT_DIR,
     OFFICIAL_GROUP_MESSAGE_EVENT,
     OFFICIAL_NOTICE_EVENT,
     OFFICIAL_PRIVATE_MESSAGE_EVENT,
