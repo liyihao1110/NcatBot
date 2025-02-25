@@ -116,7 +116,7 @@ class BotClient:
             _log.info("正常退出")
             exit(0)
 
-    def run(self, reload=False, debug=False):
+    def run(self, reload=False, debug=False, conti = False):
         """
         启动 Bot 客户端
 
@@ -167,18 +167,22 @@ class BotClient:
             INFO_TIME_EXPIRE = time.time() + 20
             _log.info("正在连接 napcat websocket 服务器...")
             while not self.napcat_server_ok():
-                time.sleep(2)
-                if time.time() > MAX_TIME_EXPIRE:
-                    _log.info("连接 napcat websocket 服务器超时, 请检查以下内容:")
-                    _log.info("1. 你在另一个黑框框扫码登录了吗?")
-                    _log.info("2. 检查 QQ 号是否正确填写?")
-                    _log.info("3. 检查网络是否正常?")
-                    exit(0)
-                if time.time() > INFO_TIME_EXPIRE:
-                    _log.info("连接 napcat websocket 服务器超时, 请检查以下内容:")
-                    _log.info("1. 你在另一个黑框框扫码登录了吗?")
-                    _log.info(f"2. 确认 QQ 号: {config.bt_uin}")
-                    INFO_TIME_EXPIRE += 100
+                if not conti:
+                    time.sleep(2)
+                    if time.time() > MAX_TIME_EXPIRE:
+                        _log.info("连接 napcat websocket 服务器超时, 请检查以下内容:")
+                        _log.info("1. 你在另一个黑框框扫码登录了吗?")
+                        _log.info("2. 检查 QQ 号是否正确填写?")
+                        _log.info("3. 检查网络是否正常?")
+                        exit(0)
+                    if time.time() > INFO_TIME_EXPIRE:
+                        _log.info("连接 napcat websocket 服务器超时, 请检查以下内容:")
+                        _log.info("1. 你在另一个黑框框扫码登录了吗?")
+                        _log.info(f"2. 确认 QQ 号: {config.bt_uin}")
+                        INFO_TIME_EXPIRE += 100
+                else:
+                    _log.warning("连接失败, 3秒后将重新尝试连接")
+                    time.sleep(3)
             _log.info("连接 napcat websocket 服务器成功!")
 
         def check_ncatbot_install():
