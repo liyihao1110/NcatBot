@@ -134,7 +134,7 @@ class BotClient:
             if platform.system() == "Linux":
                 napcat_dir = "/opt/QQ/resources/app/app_launcher/napcat"
             else:
-                napcat_dir = NAPCAT_DIR
+                napcat_dir = os.path.join(os.getcwd(), 'napcat')
 
             if platform.system() == "Darwin":
                 _log.error("暂不支持 MacOS 系统")
@@ -240,7 +240,7 @@ class BotClient:
                 if not os.path.exists(config_path):
                     os.makedirs(config_path)
             else:
-                config_path = os.path.join(NAPCAT_DIR, "config")
+                config_path = os.path.join(os.getcwd(), 'napcat', "config")
 
             # 写 onebot11 qq 数据
             with open(

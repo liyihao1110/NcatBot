@@ -8,11 +8,10 @@ import requests
 from tqdm import tqdm
 
 from ncatbot.utils.env_checker import check_linux_permissions
-from ncatbot.utils.literals import NAPCAT_DIR
 from ncatbot.utils.logger import get_log
 
 _log = get_log()
-
+napcat_dir = 'napcat'
 
 def get_proxy_url():
     """获取 github 代理 URL"""
@@ -92,7 +91,7 @@ def download_napcat_windows(type: str, base_path: str):
                 total=total_size,
                 unit="iB",
                 unit_scale=True,
-                desc=f"Downloading {NAPCAT_DIR}.zip",
+                desc=f"Downloading {napcat_dir}.zip",
                 bar_format="{l_bar}{bar}| {n_fmt}/{total_fmt} [{elapsed}<{remaining}, {rate_fmt}]",
                 colour="green",
                 dynamic_ncols=True,
@@ -100,7 +99,7 @@ def download_napcat_windows(type: str, base_path: str):
                 mininterval=0.1,
                 maxinterval=1.0,
             )
-            with open(f"{NAPCAT_DIR}.zip", "wb") as f:
+            with open(f"{napcat_dir}.zip", "wb") as f:
                 for data in r.iter_content(chunk_size=1024):
                     progress_bar.update(len(data))
                     f.write(data)
@@ -112,10 +111,10 @@ def download_napcat_windows(type: str, base_path: str):
             _log.error("错误信息:", e)
             return
         try:
-            with zipfile.ZipFile(f"{NAPCAT_DIR}.zip", "r") as zip_ref:
-                zip_ref.extractall(NAPCAT_DIR)
+            with zipfile.ZipFile(f"{napcat_dir}.zip", "r") as zip_ref:
+                zip_ref.extractall(napcat_dir)
                 _log.info("解压 napcat 客户端成功, 请运行 napcat 客户端.")
-            os.remove(f"{NAPCAT_DIR}.zip")
+            os.remove(f"{napcat_dir}.zip")
         except Exception as e:
             _log.error("解压 napcat 客户端失败, 请检查 napcat 客户端是否正确.")
             _log.error("错误信息: ", e)
